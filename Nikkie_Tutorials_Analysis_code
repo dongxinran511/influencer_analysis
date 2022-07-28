@@ -1,0 +1,110 @@
+#Read data set of Nikkie_Tutorials
+Nikkie_Tutorials <- data.frame(read.csv("~/Desktop/Dissertation/Data/Nikkie Tutorials.csv", encoding = "UTF-8"))
+
+#Put the transcript of different phase together 
+##Account_phaseN: all the data in phase N
+##Account_phaseN_transcript: put the content separately
+##Account_phaseN_transcript_together: put all the content in one paragraph
+Nikkie_Tutorials_phase1 <- Nikkie_Tutorials[Nikkie_Tutorials$Phase == 'Individual consumer identity',]
+Nikkie_Tutorials_phase1_transcript <- paste(Nikkie_Tutorials_phase1$Transcript)
+Nikkie_Tutorials_phase1_transcript_together <- paste(Nikkie_Tutorials_phase1_transcript, collapse="")
+Nikkie_Tutorials_phase2 <- Nikkie_Tutorials[Nikkie_Tutorials$Phase == 'Turning phase 1',]
+Nikkie_Tutorials_phase2_transcript <- paste(Nikkie_Tutorials_phase2$Transcript)
+Nikkie_Tutorials_phase2_transcript_together <- paste(Nikkie_Tutorials_phase2_transcript, collapse="")\
+Nikkie_Tutorials_phase3 <- Nikkie_Tutorials[Nikkie_Tutorials$Phase == 'Collective influencer identity',]
+Nikkie_Tutorials_phase3_transcript <- paste(Nikkie_Tutorials_phase3$Transcript)
+Nikkie_Tutorials_phase3_transcript_together <- paste(Nikkie_Tutorials_phase3_transcript, collapse="")
+Nikkie_Tutorials_phase4 <- Nikkie_Tutorials[Nikkie_Tutorials$Phase == 'Turning phase 2',]
+Nikkie_Tutorials_phase4_transcript <- paste(Nikkie_Tutorials_phase4$Transcript)
+Nikkie_Tutorials_phase4_transcript_together <- paste(Nikkie_Tutorials_phase4_transcript, collapse="")
+Nikkie_Tutorials_phase5 <- Nikkie_Tutorials[Nikkie_Tutorials$Phase == 'Influencer brand identity',]
+Nikkie_Tutorials_phase5_transcript <- paste(Nikkie_Tutorials_phase5$Transcript)
+Nikkie_Tutorials_phase5_transcript_together <- paste(Nikkie_Tutorials_phase5_transcript, collapse="")
+
+#Data Cleaning
+##Change all transcript to lowercase
+Nikkie_Tutorials_phase1_transcript_together <-tolower(Nikkie_Tutorials_phase1_transcript_together)
+Nikkie_Tutorials_phase2_transcript_together<-tolower(Nikkie_Tutorials_phase2_transcript_together[Encoding(Nikkie_Tutorials_phase2_transcript_together)!='unknown'])
+Nikkie_Tutorials_phase3_transcript_together<-tolower(Nikkie_Tutorials_phase3_transcript_together[Encoding(Nikkie_Tutorials_phase3_transcript_together)!='unknown'])
+Nikkie_Tutorials_phase4_transcript_together<-tolower(Nikkie_Tutorials_phase4_transcript_together[Encoding(Nikkie_Tutorials_phase4_transcript_together)!='unknown'])
+Nikkie_Tutorials_phase5_transcript_together<-tolower(Nikkie_Tutorials_phase5_transcript_together[Encoding(Nikkie_Tutorials_phase5_transcript_together)!='unknown'])
+
+##Remove punctuation
+Nikkie_Tutorials_phase1_transcript_together= gsub('[[:punct:]]', '', Nikkie_Tutorials_phase1_transcript_together)
+Nikkie_Tutorials_phase2_transcript_together = gsub('[[:punct:]]', '', Nikkie_Tutorials_phase2_transcript_together)
+Nikkie_Tutorials_phase3_transcript_together = gsub('[[:punct:]]', '', Nikkie_Tutorials_phase3_transcript_together)
+Nikkie_Tutorials_phase4_transcript_together = gsub('[[:punct:]]', '', Nikkie_Tutorials_phase4_transcript_together)
+Nikkie_Tutorials_phase5_transcript_together = gsub('[[:punct:]]', '', Nikkie_Tutorials_phase5_transcript_together)
+
+#Attitude Analysis by QDAP Dictionary
+Nikkie_Tutorials_sentiment1 <- analyzeSentiment(Nikkie_Tutorials_phase1_transcript)
+Nikkie_Tutorials_phase1_sentiment <- convertToDirection(Nikkie_Tutorials_sentiment1$SentimentQDAP)
+as.data.frame(table(Nikkie_Tutorials_phase1_sentiment))
+Nikkie_Tutorials_sentiment2 <- analyzeSentiment(Nikkie_Tutorials_phase2_transcript)
+Nikkie_Tutorials_phase2_sentiment <- convertToDirection(Nikkie_Tutorials_sentiment2$SentimentQDAP)
+as.data.frame(table(Nikkie_Tutorials_phase2_sentiment))
+Nikkie_Tutorials_sentiment3 <- analyzeSentiment(Nikkie_Tutorials_phase3_transcript)
+Nikkie_Tutorials_phase3_sentiment <- convertToDirection(Nikkie_Tutorials_sentiment3$SentimentQDAP)
+as.data.frame(table(Nikkie_Tutorials_phase3_sentiment))
+Nikkie_Tutorials_sentiment4 <- analyzeSentiment(Nikkie_Tutorials_phase4_transcript)
+Nikkie_Tutorials_phase4_sentiment <- convertToDirection(Nikkie_Tutorials_sentiment4$SentimentQDAP)
+as.data.frame(table(Nikkie_Tutorials_phase4_sentiment))
+Nikkie_Tutorials_sentiment5 <- analyzeSentiment(Nikkie_Tutorials_phase5_transcript)
+Nikkie_Tutorials_phase5_sentiment <- convertToDirection(Nikkie_Tutorials_sentiment5$SentimentQDAP)
+as.data.frame(table(Nikkie_Tutorials_phase5_sentiment))
+
+#word frequency
+Nikkie_Tutorials_phase1_freq <- as.data.frame(table(strsplit(Nikkie_Tutorials_phase1_transcript_together," ")))
+names(Nikkie_Tutorials_phase1_freq) <- c("word", "frequency")
+Nikkie_Tutorials_phase1_freq<-dplyr::arrange(Nikkie_Tutorials_phase1_freq, desc(frequency))
+head(Nikkie_Tutorials_phase1_freq,100)
+write.csv(head(Nikkie_Tutorials_phase1_freq,100),file='~/Desktop/Dissertation/Data/Nikkie_Tutorials_phase1_freq.csv')
+Nikkie_Tutorials_phase2_freq <- as.data.frame(table(strsplit(Nikkie_Tutorials_phase2_transcript_together," ")))
+names(Nikkie_Tutorials_phase2_freq) <- c("word", "frequency")
+Nikkie_Tutorials_phase2_freq<-dplyr::arrange(Nikkie_Tutorials_phase2_freq, desc(frequency))
+head(Nikkie_Tutorials_phase2_freq,100)
+write.csv(head(Nikkie_Tutorials_phase2_freq,100),file='~/Desktop/Dissertation/Data/Nikkie_Tutorials_phase2_freq.csv')
+Nikkie_Tutorials_phase3_freq <- as.data.frame(table(strsplit(Nikkie_Tutorials_phase3_transcript_together," ")))
+names(Nikkie_Tutorials_phase3_freq) <- c("word", "frequency")
+Nikkie_Tutorials_phase3_freq<-dplyr::arrange(Nikkie_Tutorials_phase3_freq, desc(frequency))
+head(Nikkie_Tutorials_phase3_freq,100)
+write.csv(head(Nikkie_Tutorials_phase3_freq,100),file='~/Desktop/Dissertation/Data/Nikkie_Tutorials_phase3_freq.csv')
+Nikkie_Tutorials_phase4_freq <- as.data.frame(table(strsplit(Nikkie_Tutorials_phase4_transcript_together," ")))
+names(Nikkie_Tutorials_phase4_freq) <- c("word", "frequency")
+Nikkie_Tutorials_phase4_freq<-dplyr::arrange(Nikkie_Tutorials_phase4_freq, desc(frequency))
+head(Nikkie_Tutorials_phase4_freq,100)
+write.csv(head(Nikkie_Tutorials_phase4_freq,100),file='~/Desktop/Dissertation/Data/Nikkie_Tutorials_phase4_freq.csv')
+Nikkie_Tutorials_phase5_freq <- as.data.frame(table(strsplit(Nikkie_Tutorials_phase5_transcript_together," ")))
+names(Nikkie_Tutorials_phase5_freq) <- c("word", "frequency")
+Nikkie_Tutorials_phase5_freq<-dplyr::arrange(Nikkie_Tutorials_phase5_freq, desc(frequency))
+head(Nikkie_Tutorials_phase5_freq,100)
+write.csv(head(Nikkie_Tutorials_phase5_freq,100),file='~/Desktop/Dissertation/Data/Nikkie_Tutorials_phase5_freq.csv')
+
+#word cloud
+wordcloud2(Nikkie_Tutorials_phase1_freq, size=1.6)
+wordcloud2(Nikkie_Tutorials_phase2_freq, size=1.6)
+wordcloud2(Nikkie_Tutorials_phase3_freq, size=1.6)
+wordcloud2(Nikkie_Tutorials_phase4_freq, size=1.6)
+wordcloud2(Nikkie_Tutorials_phase5_freq, size=1.6)
+
+#sentiment analysis
+Nikkie_Tutorials_sentiment_phase1 = get_nrc_sentiment(Nikkie_Tutorials_phase1_transcript_together)
+Nikkie_Tutorials_sentiment_phase2 = get_nrc_sentiment(Nikkie_Tutorials_phase2_transcript_together)
+Nikkie_Tutorials_sentiment_phase3 = get_nrc_sentiment(Nikkie_Tutorials_phase3_transcript_together)
+Nikkie_Tutorials_sentiment_phase4 = get_nrc_sentiment(Nikkie_Tutorials_phase4_transcript_together)
+Nikkie_Tutorials_sentiment_phase5 = get_nrc_sentiment(Nikkie_Tutorials_phase5_transcript_together)
+Nikkie_Tutorials_sentiment <- data.frame(rbind(Nikkie_Tutorials_sentiment_phase1,Nikkie_Tutorials_sentiment_phase2,Nikkie_Tutorials_sentiment_phase3,Nikkie_Tutorials_sentiment_phase4,Nikkie_Tutorials_sentiment_phase5),row.names = c('Individual consumer identity','Turning phase 1','Collective influencer identity','Turning phase 2','Influencer brand identity'))
+Nikkie_Tutorials_sentiment
+write.csv(Nikkie_Tutorials_sentiment,file='~/Desktop/Dissertation/Data/Nikkie_Tutorials_sentiment.csv')
+
+#content analysis
+Nikkie_Tutorials_phase1_topic <- table(Nikkie_Tutorials_phase1$topic)
+data.frame(Nikkie_Tutorials_phase1_topic)
+Nikkie_Tutorials_phase2_topic <- table(Nikkie_Tutorials_phase2$topic)
+data.frame(Nikkie_Tutorials_phase2_topic)
+Nikkie_Tutorials_phase3_topic <- table(Nikkie_Tutorials_phase3$topic)
+data.frame(Nikkie_Tutorials_phase3_topic)
+Nikkie_Tutorials_phase4_topic <- table(Nikkie_Tutorials_phase4$topic)
+data.frame(Nikkie_Tutorials_phase4_topic)
+Nikkie_Tutorials_phase5_topic <- table(Nikkie_Tutorials_phase5$topic)
+data.frame(Nikkie_Tutorials_phase5_topic)
