@@ -1,0 +1,144 @@
+#Install and load packages that might be used
+install.packages("readr")
+install.packages("sp")
+install.packages("tidytext")
+install.packages('magrittr')
+install.packages("SentimentAnalysis")
+install.packages("dplyr")
+install.packages('ggplot2')
+install.packages('tidyr')
+install.packages('syuzhet')
+install.packages('gplots')
+install.packages('textreg')
+install.packages('tm')
+install.packages('SnowballC')
+install.packages('NLP')
+library(readr)
+library(sp)
+library(tidytext)
+library(magrittr)
+library(SentimentAnalysis)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(syuzhet)
+library(gplots)
+library(textreg)
+library(tm)
+library(stopwords)
+library(quanteda)
+library(NLP)
+library(SnowballC)
+library(wordcloud2)
+
+#Data analysis for Jeffree Star
+##Read and save dataset
+Jeffree_star <- data.frame(read.csv("~/Desktop/Dissertation/Data/Jeffree star.csv", encoding = "UTF-8"))
+
+##Put the transcript of different phase together 
+###Account_phaseN: all the data in phase N
+###Account_phaseN_transcript: put the subtitle content separately
+###Account_phaseN_transcript_together: put all the content in one paragraph
+Jeffree_star_phase1 <- Jeffree_star[Jeffree_star$Phase == 'Individual consumer identity',]
+Jeffree_star_phase1_transcript <- paste(Jeffree_star_phase1$Transcript)
+Jeffree_star_phase1_transcript_together <- paste(Jeffree_star_phase1_transcript, collapse="")
+Jeffree_star_phase2 <- Jeffree_star[Jeffree_star$Phase == 'Turning phase 1',]
+Jeffree_star_phase2_transcript <- paste(Jeffree_star_phase2$Transcript)
+Jeffree_star_phase2_transcript_together <- paste(Jeffree_star_phase2_transcript, collapse="")
+Jeffree_star_phase3 <- Jeffree_star[Jeffree_star$Phase == 'Collective influencer identity',]
+Jeffree_star_phase3_transcript <- paste(Jeffree_star_phase3$Transcript)
+Jeffree_star_phase3_transcript_together <- paste(Jeffree_star_phase3_transcript, collapse="")
+Jeffree_star_phase4 <- Jeffree_star[Jeffree_star$Phase == 'Turning phase 2',]
+Jeffree_star_phase4_transcript <- paste(Jeffree_star_phase4$Transcript)
+Jeffree_star_phase4_transcript_together <- paste(Jeffree_star_phase4_transcript, collapse="")
+Jeffree_star_phase5 <- Jeffree_star[Jeffree_star$Phase == 'Influencer brand identity',]
+Jeffree_star_phase5_transcript <- paste(Jeffree_star_phase5$Transcript)
+Jeffree_star_phase5_transcript_together <- paste(Jeffree_star_phase5_transcript, collapse="")
+
+##Data Cleaning
+###Change all transcript to lowercase
+Jeffree_star_phase1_transcript_together <-tolower(Jeffree_star_phase1_transcript_together)
+Jeffree_star_phase2_transcript_together<-tolower(Jeffree_star_phase2_transcript_together[Encoding(Jeffree_star_phase2_transcript_together)!='unknown'])
+Jeffree_star_phase3_transcript_together<-tolower(Jeffree_star_phase3_transcript_together[Encoding(Jeffree_star_phase3_transcript_together)!='unknown'])
+Jeffree_star_phase4_transcript_together<-tolower(Jeffree_star_phase4_transcript_together[Encoding(Jeffree_star_phase4_transcript_together)!='unknown'])
+Jeffree_star_phase5_transcript_together<-tolower(Jeffree_star_phase5_transcript_together[Encoding(Jeffree_star_phase5_transcript_together)!='unknown'])
+
+###Remove punctuation: Considering that the content will contain punctuation marks, and different words followed by different punctuation marks will affect the result of word frequency analysis, so delete all punctuation marks in this step
+Jeffree_star_phase1_transcript_together= gsub('[[:punct:]]', '', Jeffree_star_phase1_transcript_together)
+Jeffree_star_phase2_transcript_together = gsub('[[:punct:]]', '', Jeffree_star_phase2_transcript_together)
+Jeffree_star_phase3_transcript_together = gsub('[[:punct:]]', '', Jeffree_star_phase3_transcript_together)
+Jeffree_star_phase4_transcript_together = gsub('[[:punct:]]', '', Jeffree_star_phase4_transcript_together)
+Jeffree_star_phase5_transcript_together = gsub('[[:punct:]]', '', Jeffree_star_phase5_transcript_together)
+
+##Attitude Analysis by QDAP Dictionary
+sentiment1 <- analyzeSentiment(Jeffree_star_phase1_transcript)
+Jeffree_star_phase1_sentiment <- convertToDirection(sentiment1$SentimentQDAP)
+as.data.frame(table(Jeffree_star_phase1_sentiment))
+sentiment2 <- analyzeSentiment(Jeffree_star_phase2_transcript)
+Jeffree_star_phase2_sentiment <- convertToDirection(sentiment2$SentimentQDAP)
+as.data.frame(table(Jeffree_star_phase2_sentiment))
+sentiment3 <- analyzeSentiment(Jeffree_star_phase3_transcript)
+Jeffree_star_phase3_sentiment <- convertToDirection(sentiment3$SentimentQDAP)
+as.data.frame(table(Jeffree_star_phase3_sentiment))
+sentiment4 <- analyzeSentiment(Jeffree_star_phase4_transcript)
+Jeffree_star_phase4_sentiment <- convertToDirection(sentiment4$SentimentQDAP)
+as.data.frame(table(Jeffree_star_phase4_sentiment))
+sentiment5 <- analyzeSentiment(Jeffree_star_phase5_transcript)
+Jeffree_star_phase5_sentiment <- convertToDirection(sentiment5$SentimentQDAP)
+as.data.frame(table(Jeffree_star_phase5_sentiment))
+
+##word frequency
+Jeffree_star_phase1_freq <- as.data.frame(table(strsplit(Jeffree_star_phase1_transcript_together," ")))
+names(Jeffree_star_phase1_freq) <- c("word", "frequency")
+Jeffree_star_phase1_freq<-dplyr::arrange(Jeffree_star_phase1_freq, desc(frequency))
+head(Jeffree_star_phase1_freq,100)
+write.csv(head(Jeffree_star_phase1_freq,100),file='~/Desktop/Dissertation/Data/Jeffree_star_phase1_freq.csv')
+Jeffree_star_phase2_freq <- as.data.frame(table(strsplit(Jeffree_star_phase2_transcript_together," ")))
+names(Jeffree_star_phase2_freq) <- c("word", "frequency")
+Jeffree_star_phase2_freq<-dplyr::arrange(Jeffree_star_phase2_freq, desc(frequency))
+head(Jeffree_star_phase2_freq,100)
+write.csv(head(Jeffree_star_phase2_freq,100),file='~/Desktop/Dissertation/Data/Jeffree_star_phase2_freq.csv')
+Jeffree_star_phase3_freq <- as.data.frame(table(strsplit(Jeffree_star_phase3_transcript_together," ")))
+names(Jeffree_star_phase3_freq) <- c("word", "frequency")
+Jeffree_star_phase3_freq<-dplyr::arrange(Jeffree_star_phase3_freq, desc(frequency))
+head(Jeffree_star_phase3_freq,100)
+write.csv(head(Jeffree_star_phase3_freq,100),file='~/Desktop/Dissertation/Data/Jeffree_star_phase3_freq.csv')
+Jeffree_star_phase4_freq <- as.data.frame(table(strsplit(Jeffree_star_phase4_transcript_together," ")))
+names(Jeffree_star_phase4_freq) <- c("word", "frequency")
+Jeffree_star_phase4_freq<-dplyr::arrange(Jeffree_star_phase4_freq, desc(frequency))
+head(Jeffree_star_phase4_freq,100)
+write.csv(head(Jeffree_star_phase4_freq,100),file='~/Desktop/Dissertation/Data/Jeffree_star_phase4_freq.csv')
+Jeffree_star_phase5_freq <- as.data.frame(table(strsplit(Jeffree_star_phase5_transcript_together," ")))
+names(Jeffree_star_phase5_freq) <- c("word", "frequency")
+Jeffree_star_phase5_freq<-dplyr::arrange(Jeffree_star_phase5_freq, desc(frequency))
+head(Jeffree_star_phase5_freq,100)
+write.csv(head(Jeffree_star_phase5_freq,100),file='~/Desktop/Dissertation/Data/Jeffree_star_phase5_freq.csv')
+
+##word cloud
+wordcloud2(Jeffree_star_phase1_freq, size=1.6)
+wordcloud2(Jeffree_star_phase2_freq, size=1.6)
+wordcloud2(Jeffree_star_phase3_freq, size=1.6)
+wordcloud2(Jeffree_star_phase4_freq, size=1.6)
+wordcloud2(Jeffree_star_phase5_freq, size=1.6)
+
+##NRC sentiment analysis
+Jeffree_star_sentiment_phase1 = get_nrc_sentiment(Jeffree_star_phase1_transcript_together)
+Jeffree_star_sentiment_phase2 = get_nrc_sentiment(Jeffree_star_phase2_transcript_together)
+Jeffree_star_sentiment_phase3 = get_nrc_sentiment(Jeffree_star_phase3_transcript_together)
+Jeffree_star_sentiment_phase4 = get_nrc_sentiment(Jeffree_star_phase4_transcript_together)
+Jeffree_star_sentiment_phase5 = get_nrc_sentiment(Jeffree_star_phase5_transcript_together)
+Jeffree_star_sentiment <- data.frame(rbind(Jeffree_star_sentiment_phase1,Jeffree_star_sentiment_phase2,Jeffree_star_sentiment_phase3,Jeffree_star_sentiment_phase4,Jeffree_star_sentiment_phase5),row.names = c('Individual consumer identity','Turning phase 1','Collective influencer identity','Turning phase 2','Influencer brand identity'))
+Jeffree_star_sentiment
+write.csv(Jeffree_star_sentiment,file='~/Desktop/Dissertation/Data/Jeffree_star_sentiment.csv')
+
+##content analysis
+Jeffree_star_phase1_topic <- table(Jeffree_star_phase1$topic)
+data.frame(Jeffree_star_phase1_topic)
+Jeffree_star_phase2_topic <- table(Jeffree_star_phase2$topic)
+data.frame(Jeffree_star_phase2_topic)
+Jeffree_star_phase3_topic <- table(Jeffree_star_phase3$topic)
+data.frame(Jeffree_star_phase3_topic)
+Jeffree_star_phase4_topic <- table(Jeffree_star_phase4$topic)
+data.frame(Jeffree_star_phase4_topic)
+Jeffree_star_phase5_topic <- table(Jeffree_star_phase5$topic)
+data.frame(Jeffree_star_phase5_topic)
